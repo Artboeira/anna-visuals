@@ -1,0 +1,6 @@
+node_modules
+dist
+release
+electron/native/build
+*.log
+.DS_Store

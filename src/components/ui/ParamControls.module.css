@@ -1,0 +1,28 @@
+.groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ab-space-4);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ab-space-3);
+}
+
+.groupHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--ab-space-2);
+  font-size: 9px;
+  font-weight: var(--ab-w-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+  color: var(--ab-amber);
+}
+
+.groupRule {
+  flex: 1;
+  height: 1px;
+  background: var(--ab-rule-inv-soft);
+}

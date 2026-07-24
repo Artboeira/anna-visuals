@@ -1,0 +1,226 @@
+/* Vocabulário compartilhado das seções do painel — superfície ink,
+   labels mono maiúsculos, hairlines, cantos retos. */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ab-space-3);
+  padding: var(--ab-space-4) 0;
+  border-bottom: var(--ab-border-inv-soft);
+}
+
+.section:last-child {
+  border-bottom: none;
+}
+
+.sectionTitle {
+  font-size: var(--ab-size-eyebrow);
+  font-weight: var(--ab-w-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+  color: var(--ab-fg-inv);
+  margin: 0;
+}
+
+.row {
+  display: flex;
+  gap: var(--ab-space-2);
+  align-items: center;
+}
+
+.row > * {
+  flex: 1;
+  min-width: 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  gap: var(--ab-space-2);
+  padding: 8px 10px;
+  background: var(--ab-ink-2);
+  border: 1px solid transparent;
+  color: var(--ab-fg-inv-muted);
+  font-size: var(--ab-size-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--ab-dur-fast) var(--ab-ease-quick),
+    color var(--ab-dur-fast) var(--ab-ease-quick);
+}
+
+.listItem:hover {
+  background: var(--ab-ink-3);
+  color: var(--ab-fg-inv);
+}
+
+.listItemActive {
+  background: var(--ab-bone);
+  color: var(--ab-ink);
+}
+
+.listItemActive:hover {
+  background: var(--ab-bone);
+  color: var(--ab-ink);
+}
+
+.tag {
+  font-size: 9px;
+  padding: 1px 7px;
+  border-radius: var(--ab-radius-pill);
+  border: 1px solid currentColor;
+  letter-spacing: var(--ab-tracking-wide);
+}
+
+.btn {
+  padding: 8px 10px;
+  background: var(--ab-ink-2);
+  border: var(--ab-border-inv-soft);
+  color: var(--ab-fg-inv);
+  font-size: var(--ab-size-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+  cursor: pointer;
+  border-radius: 0;
+  transition: background var(--ab-dur-fast) var(--ab-ease-quick);
+}
+
+.btn:hover {
+  background: var(--ab-ink-3);
+}
+
+.btnPrimary {
+  background: var(--ab-bone);
+  color: var(--ab-ink);
+  border-color: var(--ab-bone);
+}
+
+.btnPrimary:hover {
+  background: var(--ab-sage);
+}
+
+.btnDanger:hover {
+  background: var(--ab-garnet);
+  color: var(--ab-bone);
+}
+
+.input {
+  padding: 7px 8px;
+  background: var(--ab-ink-2);
+  border: var(--ab-border-inv-soft);
+  border-radius: var(--ab-radius-1);
+  color: var(--ab-fg-inv);
+  font-size: var(--ab-size-small);
+  outline: none;
+  width: 100%;
+}
+
+.input:focus {
+  border-color: var(--ab-bone);
+}
+
+.hint {
+  font-size: var(--ab-size-eyebrow);
+  color: var(--ab-fg-inv-muted);
+  letter-spacing: var(--ab-tracking-mono);
+  line-height: var(--ab-leading-body);
+}
+
+.swatch {
+  height: 22px;
+  border: 1px solid transparent;
+  border-radius: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  transition: border-color var(--ab-dur-fast) var(--ab-ease-quick);
+}
+
+.swatch:hover {
+  border-color: var(--ab-rule-inv-soft);
+}
+
+.swatchActive {
+  border-color: var(--ab-bone);
+}
+
+.swatchName {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+  color: rgba(237, 229, 211, 0.9);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+}
+
+.clusterLabel {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+  color: var(--ab-fg-inv-muted);
+  margin-top: var(--ab-space-2);
+}
+
+.presetGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--ab-space-2);
+}
+
+.presetCard {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: var(--ab-ink-2);
+  border: 1px solid transparent;
+  padding: 4px;
+  cursor: pointer;
+  transition: border-color var(--ab-dur-fast) var(--ab-ease-quick);
+}
+
+.presetCard:hover {
+  border-color: var(--ab-rule-inv-soft);
+}
+
+.presetThumb {
+  width: 100%;
+  aspect-ratio: 10 / 1.6;
+  object-fit: cover;
+  display: block;
+  background: #111;
+}
+
+.presetName {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+  color: var(--ab-fg-inv-muted);
+}
+
+.presetIndex {
+  color: var(--ab-amber);
+}
+
+.presetDelete {
+  background: none;
+  border: none;
+  color: var(--ab-fg-inv-muted);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 0 2px;
+}
+
+.presetDelete:hover {
+  color: var(--ab-bone);
+}

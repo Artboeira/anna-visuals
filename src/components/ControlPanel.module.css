@@ -1,0 +1,180 @@
+.panel {
+  width: 320px;
+  flex: 0 0 320px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--ab-bg-ink);
+  border-left: var(--ab-border-inv-soft);
+  transition: width var(--ab-dur-base) var(--ab-ease), flex-basis var(--ab-dur-base) var(--ab-ease);
+}
+
+/* A MESA precisa de largura de operação: decks + duas colunas */
+.panelWide {
+  width: 620px;
+  flex: 0 0 620px;
+}
+
+.header {
+  padding: var(--ab-space-4);
+  border-bottom: var(--ab-border-inv);
+  display: flex;
+  flex-direction: column;
+  gap: var(--ab-space-3);
+}
+
+.brandRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--ab-space-2);
+}
+
+.brand {
+  font-family: var(--ab-font-display);
+  font-weight: var(--ab-w-thin);
+  font-size: 28px;
+  letter-spacing: var(--ab-tracking-tight);
+  color: var(--ab-fg-inv);
+  line-height: var(--ab-leading-tight);
+}
+
+.brandSub {
+  font-size: var(--ab-size-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+  color: var(--ab-fg-inv-muted);
+}
+
+/* Símbolo Estúdio AB — mesmo padrão dos outros softwares do estúdio */
+.abLogo {
+  width: 32px;
+  height: 32px;
+  margin-left: auto;
+  color: rgba(237, 229, 211, 0.5);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.transport {
+  display: flex;
+  gap: var(--ab-space-2);
+  align-items: stretch;
+}
+
+.transportBtn {
+  flex: 1;
+  padding: 7px 8px;
+  background: var(--ab-ink-2);
+  border: var(--ab-border-inv-soft);
+  border-radius: 0;
+  color: var(--ab-fg-inv);
+  font-size: var(--ab-size-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+  cursor: pointer;
+  transition: background var(--ab-dur-fast) var(--ab-ease-quick);
+}
+
+.transportBtn:hover {
+  background: var(--ab-ink-3);
+}
+
+.transportActive {
+  background: var(--ab-amber);
+  border-color: var(--ab-amber);
+  color: var(--ab-ink);
+}
+
+.transportActive:hover {
+  background: var(--ab-amber);
+}
+
+.bpmBox {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: var(--ab-border-inv-soft);
+  padding: 0 8px;
+}
+
+.bpmInput {
+  width: 100%;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--ab-fg-inv);
+  font-size: var(--ab-size-body);
+  font-variant-numeric: tabular-nums;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.bpmInput::-webkit-inner-spin-button {
+  display: none;
+}
+
+.bpmLabel {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+  color: var(--ab-fg-inv-muted);
+}
+
+.tabs {
+  display: flex;
+  border-bottom: var(--ab-border-inv-soft);
+}
+
+.tab {
+  flex: 1;
+  padding: 9px 2px;
+  background: none;
+  border: none;
+  border-right: 1px solid var(--ab-rule-inv-soft);
+  color: var(--ab-fg-inv-muted);
+  font-size: var(--ab-size-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+  cursor: pointer;
+  transition: background var(--ab-dur-fast) var(--ab-ease-quick),
+    color var(--ab-dur-fast) var(--ab-ease-quick);
+}
+
+.tab:last-child {
+  border-right: none;
+}
+
+.tab:hover {
+  color: var(--ab-fg-inv);
+}
+
+.tabActive {
+  background: var(--ab-bone);
+  color: var(--ab-ink);
+  font-weight: var(--ab-w-bold);
+}
+
+.tabActive:hover {
+  color: var(--ab-ink);
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 var(--ab-space-4);
+  scrollbar-width: thin;
+  scrollbar-color: var(--ab-ink-3) transparent;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--ab-space-3) var(--ab-space-4);
+  border-top: var(--ab-border-inv);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+  color: var(--ab-fg-inv-muted);
+}

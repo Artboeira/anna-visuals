@@ -1,0 +1,123 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--ab-space-2);
+}
+
+.label {
+  font-size: var(--ab-size-eyebrow);
+  font-weight: var(--ab-w-regular);
+  color: var(--ab-fg-inv-muted);
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+}
+
+.chip {
+  flex: 0 0 auto;
+  min-width: 92px;
+  height: 22px;
+  border: 1px solid var(--ab-rule-inv-soft);
+  border-radius: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  transition: border-color var(--ab-dur-fast) var(--ab-ease-quick);
+}
+
+.chip:hover {
+  border-color: var(--ab-bone);
+}
+
+.hex {
+  font-size: 9px;
+  letter-spacing: var(--ab-tracking-wide);
+  color: rgba(237, 229, 211, 0.9);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+  font-variant-numeric: tabular-nums;
+}
+
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.presetBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 7px;
+  background: var(--ab-ink-2);
+  border: 1px solid transparent;
+  border-radius: 0;
+  color: var(--ab-fg-inv-muted);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+  cursor: pointer;
+  transition: border-color var(--ab-dur-fast) var(--ab-ease-quick),
+    color var(--ab-dur-fast) var(--ab-ease-quick);
+}
+
+.presetBtn:hover {
+  color: var(--ab-fg-inv);
+  border-color: var(--ab-rule-inv-soft);
+}
+
+.presetActive {
+  border-color: var(--ab-bone);
+  color: var(--ab-fg-inv);
+}
+
+.presetSwatch {
+  width: 10px;
+  height: 10px;
+  border: 1px solid rgba(237, 229, 211, 0.3);
+}
+
+.pickerWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pickerWrap :global(.react-colorful) {
+  width: 100%;
+  height: 120px;
+}
+
+.pickerWrap :global(.react-colorful__saturation),
+.pickerWrap :global(.react-colorful__hue) {
+  border-radius: 0;
+}
+
+.pickerWrap :global(.react-colorful__hue) {
+  height: 14px;
+}
+
+.hexInput {
+  padding: 6px 8px;
+  background: var(--ab-ink-2);
+  border: var(--ab-border-inv-soft);
+  border-radius: var(--ab-radius-1);
+  color: var(--ab-fg-inv);
+  font-size: var(--ab-size-eyebrow);
+  font-family: var(--ab-font-mono);
+  letter-spacing: var(--ab-tracking-wide);
+  outline: none;
+  width: 100%;
+  text-transform: uppercase;
+}
+
+.hexInput:focus {
+  border-color: var(--ab-bone);
+}

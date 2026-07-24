@@ -1,0 +1,59 @@
+.container {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ab-space-2);
+  padding: var(--ab-space-5);
+}
+
+.frame {
+  border: var(--ab-border-inv-soft);
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 100%;
+  font-size: var(--ab-size-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+  color: var(--ab-fg-inv-muted);
+}
+
+/* Modo palco (P): sala escura, faixa 10:1 centrada com o cobogó */
+.containerClean {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4vh 2vw;
+}
+
+.frameClean {
+  border: none;
+}
+
+.presentation {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  cursor: none;
+}
+
+.presentationCanvas {
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}

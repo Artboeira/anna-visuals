@@ -1,0 +1,281 @@
+.mesa {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ab-space-4);
+  padding: var(--ab-space-4) 0;
+}
+
+/* ───── Decks ───── */
+
+.decksBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ab-space-2);
+  border-bottom: var(--ab-border-inv-soft);
+  padding-bottom: var(--ab-space-4);
+}
+
+.decks {
+  display: flex;
+  gap: var(--ab-space-2);
+  align-items: stretch;
+}
+
+.deck {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--ab-space-2);
+  background: var(--ab-ink-2);
+  border: 1px solid var(--ab-rule-inv-soft);
+}
+
+.deckLive {
+  border-color: var(--ab-amber);
+}
+
+.deckHead {
+  display: flex;
+  align-items: baseline;
+  gap: var(--ab-space-2);
+}
+
+.deckLetter {
+  font-family: var(--ab-font-display);
+  font-weight: var(--ab-w-thin);
+  font-size: 22px;
+  line-height: 1;
+  color: var(--ab-fg-inv);
+}
+
+.deckRole {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+  color: var(--ab-fg-inv-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.deckScene {
+  font-size: var(--ab-size-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+  color: var(--ab-fg-inv);
+}
+
+.deckPalette {
+  height: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.deckEmpty {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+  color: var(--ab-fg-inv-muted);
+  padding: 6px 0;
+}
+
+.swapBtn {
+  flex: 0 0 auto;
+  align-self: center;
+  padding: 10px 8px;
+  background: var(--ab-ink-2);
+  border: var(--ab-border-inv-soft);
+  color: var(--ab-fg-inv);
+  font-size: var(--ab-size-eyebrow);
+  letter-spacing: var(--ab-tracking-wide);
+  cursor: pointer;
+  border-radius: 0;
+  transition: background var(--ab-dur-fast) var(--ab-ease-quick);
+}
+
+.swapBtn:hover:not(:disabled) {
+  background: var(--ab-ink-3);
+}
+
+.swapBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ───── Crossfader ───── */
+
+.faderRow {
+  display: flex;
+  align-items: center;
+  gap: var(--ab-space-2);
+}
+
+.faderLabel {
+  font-size: var(--ab-size-eyebrow);
+  font-weight: var(--ab-w-bold);
+  color: var(--ab-fg-inv);
+}
+
+.fader {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  height: 6px;
+  border-radius: 0;
+  background: var(--ab-ink-3);
+  border: var(--ab-border-inv-soft);
+  outline: none;
+  cursor: ew-resize;
+}
+
+.fader::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 26px;
+  border-radius: 0;
+  background: var(--ab-bone);
+  border: 1px solid var(--ab-ink);
+  cursor: ew-resize;
+}
+
+.fader::-moz-range-thumb {
+  width: 22px;
+  height: 26px;
+  border-radius: 0;
+  background: var(--ab-bone);
+  border: 1px solid var(--ab-ink);
+  cursor: ew-resize;
+}
+
+.fader:disabled {
+  opacity: 0.35;
+}
+
+.deckActions {
+  display: flex;
+  gap: var(--ab-space-2);
+}
+
+.deckActions > * {
+  flex: 1;
+}
+
+/* ───── Banco de presets ───── */
+
+.bank {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ab-space-2);
+  border-bottom: var(--ab-border-inv-soft);
+  padding-bottom: var(--ab-space-4);
+}
+
+.bankHeader {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+  color: var(--ab-fg-inv-muted);
+}
+
+.bankGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: var(--ab-space-2);
+}
+
+.bankCard {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 3px;
+  background: var(--ab-ink-2);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color var(--ab-dur-fast) var(--ab-ease-quick);
+}
+
+.bankCard:hover {
+  border-color: var(--ab-amber);
+}
+
+.bankThumb {
+  width: 100%;
+  aspect-ratio: 10 / 1.8;
+  object-fit: cover;
+  display: block;
+  background: #111;
+}
+
+.bankName {
+  display: flex;
+  gap: 4px;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+  color: var(--ab-fg-inv-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bankIndex {
+  color: var(--ab-amber);
+  font-weight: var(--ab-w-bold);
+}
+
+/* ───── Colunas: params agrupados + cor/master/salvar ───── */
+
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--ab-space-5);
+  align-items: start;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ab-space-3);
+  min-width: 0;
+}
+
+.colTitle {
+  font-size: var(--ab-size-eyebrow);
+  font-weight: var(--ab-w-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--ab-tracking-wide);
+  color: var(--ab-fg-inv);
+  border-bottom: var(--ab-border-inv-soft);
+  padding-bottom: 6px;
+  margin-top: var(--ab-space-2);
+}
+
+.colTitle:first-child {
+  margin-top: 0;
+}
+
+.paletteGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.paletteChip {
+  height: 18px;
+  border: 1px solid transparent;
+  border-radius: 0;
+  cursor: pointer;
+  padding: 0;
+  transition: border-color var(--ab-dur-fast) var(--ab-ease-quick);
+}
+
+.paletteChip:hover {
+  border-color: var(--ab-rule-inv-soft);
+}
+
+.paletteChipActive {
+  border-color: var(--ab-bone);
+}

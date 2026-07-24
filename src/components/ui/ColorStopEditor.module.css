@@ -1,0 +1,91 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+}
+
+.track {
+  position: relative;
+  height: 20px;
+  border-radius: 0;
+  border: var(--ab-border-inv-soft);
+  cursor: crosshair;
+  user-select: none;
+}
+
+.handle {
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 0;
+  border: 1px solid rgba(237, 229, 211, 0.7);
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  z-index: 1;
+  box-sizing: border-box;
+  transition: border-color var(--ab-dur-fast) var(--ab-ease-quick);
+}
+
+.handle:active {
+  cursor: grabbing;
+}
+
+.handle.selected {
+  border-color: var(--ab-bone);
+  z-index: 2;
+}
+
+.removeBtn {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ab-ink-3);
+  border: var(--ab-border-inv-soft);
+  color: var(--ab-fg-inv-muted);
+  font-size: 13px;
+  line-height: 1;
+  width: 16px;
+  height: 16px;
+  border-radius: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.removeBtn:hover {
+  color: var(--ab-fg-inv);
+  background: var(--ab-ink-2);
+}
+
+.pickerWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.pickerWrap :global(.react-colorful) {
+  width: 100%;
+  height: 120px;
+}
+
+.pickerWrap :global(.react-colorful__saturation) {
+  border-radius: 0;
+}
+
+.pickerWrap :global(.react-colorful__hue) {
+  border-radius: 0;
+  height: 14px;
+}
+
+.hexLabel {
+  font-size: var(--ab-size-eyebrow);
+  color: var(--ab-fg-inv-muted);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--ab-tracking-wide);
+}

@@ -1,0 +1,18 @@
+{
+  "name": "gradient-system-ndi-native",
+  "version": "0.1.0",
+  "private": true,
+  "description": "N-API binding pro NDI sender. Não publicado em npm — build local.",
+  "main": "index.js",
+  "gypfile": true,
+  "scripts": {
+    "install": "node-gyp rebuild || echo 'NDI binding build falhou — siga VJ_INTEGRATION.md (NDI SDK ausente?). App continua sem NDI direto.'",
+    "rebuild": "node-gyp rebuild",
+    "configure": "node-gyp configure",
+    "clean": "node-gyp clean"
+  },
+  "dependencies": {
+    "bindings": "^1.5.0",
+    "node-addon-api": "^7.0.0"
+  }
+}
