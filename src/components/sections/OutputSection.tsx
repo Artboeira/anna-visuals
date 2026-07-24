@@ -28,6 +28,7 @@ interface VJStatus {
   syphon: OutputStatus;
   spout?: OutputStatus;
   frame: { width: number; height: number };
+  outputWindowOpen?: boolean;
   platform: string;
 }
 
@@ -40,6 +41,7 @@ interface ElectronVJ {
   startSpout?(name: string): Promise<{ ok: boolean; error: string | null }>;
   stopSpout?(): Promise<{ ok: boolean }>;
   setOutputSize(width: number, height: number): Promise<{ ok: boolean }>;
+  openOutput?(): Promise<{ ok: boolean }>;
 }
 
 declare global {
@@ -276,8 +278,24 @@ export function OutputSection() {
               placeholder="Nome da fonte"
             />
             <div className={s.hint}>
-              Frame {status.frame.width || '—'} × {status.frame.height || '—'} · captura na
-              resolução da janela — use o modo saída (O).
+              A captura vem da <b>janela de saída</b> dedicada (abre sozinha ao
+              iniciar uma saída, no tamanho da resolução configurada acima).
+              Esta janela de controle segue livre para operar a MESA.
+            </div>
+            <div className={s.row}>
+              <button
+                className={s.btn}
+                onClick={async () => {
+                  await vj.openOutput?.();
+                  await vj.setOutputSize(output.internalWidth, output.internalHeight);
+                  setStatus(await vj.status());
+                }}
+              >
+                {status.outputWindowOpen ? 'Janela de saída aberta ✓' : 'Abrir janela de saída'}
+              </button>
+            </div>
+            <div className={s.hint}>
+              Frame capturado: {status.frame.width || '—'} × {status.frame.height || '—'}
             </div>
             <OutputRow
               label="NDI"

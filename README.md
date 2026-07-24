@@ -95,15 +95,29 @@ em localStorage e sai no JSON exportado. Se o corte real vier como SVG/DXF,
 substitua as funções de `grid/glyphPath.ts` por `new Path2D(svgPath)` —
 nenhum outro módulo muda.
 
-## Saída para o LED (dia do show)
+## Saída para o LED (dia do show) — duas janelas
+
+O Electron usa **janela de saída dedicada**: ao iniciar NDI/Syphon/Spout, uma
+janela pequena (`?output=1`, no tamanho da resolução configurada) abre e é
+**dela** que os frames são capturados. A janela de controle fica livre para
+operar a MESA ao vivo; o estado sincroniza via BroadcastChannel e o beat usa
+relógio de parede (as duas janelas batem no mesmo tempo musical).
+
+Por que: capturar a janela de controle (retina, ~23 MB/frame) gerava churn de
+memória de GB/s — em teste derrubou a máquina. A janela dedicada custa ~5 MB
+por frame e o consumo fica limitado (~0,5–1 GB medido em soak com Syphon).
 
 1. `npm run dev:electron` (ou o app empacotado `npm run build:mac`).
-2. Aba **SAÍDA** → definir a resolução do pixel map → o IPC redimensiona a
-   janela para o tamanho exato do conteúdo.
-3. Tecla `O` (modo saída) — o frame capturado é só o canvas, sem UI.
-4. Iniciar **Syphon** (Resolume na mesma máquina, macOS) ou **NDI** (rede).
-5. Autostart tape-machine: `ANNA_AUTOSTART_NDI=ANNA_LED` /
-   `ANNA_AUTOSTART_SYPHON=ANNA_LED` como env vars.
+2. Aba **SAÍDA** → resolução do pixel map → **Iniciar** Syphon (macOS local),
+   Spout (Windows local) ou NDI (rede) — a janela de saída abre sozinha.
+3. Operar normalmente pela janela de controle (MESA, presets, fader).
+4. Autostart tape-machine: `ANNA_AUTOSTART_SYPHON=ANNA_LED` /
+   `ANNA_AUTOSTART_NDI=...` / `ANNA_AUTOSTART_SPOUT=...`.
+5. Captura limitada a 30 fps por padrão (`ANNA_CAPTURE_FPS=60` para subir);
+   log `[mem]` no terminal mostra o consumo a cada 10 s.
+
+O modo saída da própria janela (tecla `O`) segue existindo para uso sem
+Electron (browser puro).
 
 ### NDI — dependência nativa
 

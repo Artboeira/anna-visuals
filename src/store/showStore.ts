@@ -154,6 +154,13 @@ const storedSession = loadSessionFromStorage();
 //   ?mask=0       oculta cobogó  ?ghost=1    ghost        ?tab=<id> aba inicial
 const urlParams =
   typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+
+/**
+ * Janela de saída dedicada (?output=1): renderiza só o canvas full-bleed —
+ * é ela que o Electron captura. O estado chega via windowSync.
+ */
+export const IS_OUTPUT_WINDOW = urlParams?.get('output') === '1';
+
 const TAB_IDS = ['mesa', 'cena', 'cor', 'grade', 'presets', 'output'] as const;
 const urlTab = urlParams?.get('tab') as UiState['activeTab'] | null;
 const initialTab: UiState['activeTab'] =
@@ -197,7 +204,7 @@ export const useShowStore = create<ShowState>((set, get) => ({
     ghost: urlParams?.get('ghost') === '1',
     ghostAlpha: 0.5,
     clean: urlParams?.get('clean') === '1',
-    presentation: urlParams?.get('present') === '1',
+    presentation: IS_OUTPUT_WINDOW || urlParams?.get('present') === '1',
     activeTab: initialTab,
   },
   transition: { durationMs: 2000, mode: 'crossfade' },

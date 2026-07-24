@@ -175,7 +175,9 @@ export class RenderEngine {
     const w = this.internal.width;
     const h = this.internal.height;
     const paletteA = getPalette(st.paletteId, st.customPalettes);
-    const beat = beatState(now / 1000, st.bpm);
+    // Beat por relógio de PAREDE (não performance.now): as janelas de
+    // controle e de saída compartilham o mesmo tempo musical.
+    const beat = beatState(Date.now() / 1000, st.bpm);
     const frame: FrameInfo = { width: w, height: h, dt, beat, grid: this.grid! };
 
     // Troca A↔B: promove as instâncias sem transição (o visual não pula,

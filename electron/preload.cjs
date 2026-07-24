@@ -13,4 +13,5 @@ contextBridge.exposeInMainWorld('electronVJ', {
   startSpout: (name) => ipcRenderer.invoke('vj:start-spout', name),
   stopSpout: () => ipcRenderer.invoke('vj:stop-spout'),
   setOutputSize: (width, height) => ipcRenderer.invoke('vj:set-output-size', width, height),
+  openOutput: () => ipcRenderer.invoke('vj:open-output'),
 });
