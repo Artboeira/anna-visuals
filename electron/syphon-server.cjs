@@ -83,12 +83,15 @@ class SyphonServer {
   publishFrame(buf, w, h) {
     if (!this._running || !this._server) return;
     try {
+      // node-syphon valida o tipo: precisa ser Uint8ClampedArray, não Buffer.
+      // View zero-copy sobre a mesma memória do bitmap do Electron.
+      const data = new Uint8ClampedArray(buf.buffer, buf.byteOffset, buf.byteLength);
       const region = { x: 0, y: 0, width: w, height: h };
       const dim = { width: w, height: h };
       if (this._mode === 'opengl') {
-        this._server.publishImageData(buf, region, dim, true, 'GL_TEXTURE_RECTANGLE_EXT');
+        this._server.publishImageData(data, region, dim, true, 'GL_TEXTURE_RECTANGLE_EXT');
       } else {
-        this._server.publishImageData(buf, region, dim, true);
+        this._server.publishImageData(data, region, dim, true);
       }
     } catch (err) {
       this._lastError = `Syphon publish: ${err.message}`;
