@@ -118,6 +118,22 @@ npm run rebuild:ndi
 Sem o SDK, o NDI aparece como "indisponível" e o **Syphon segue funcionando**
 (instalado via npm, já testado nesta máquina).
 
+### Setup em outro Mac (app + Resolume na mesma máquina → Syphon)
+
+```bash
+xcode-select --install        # Command Line Tools (compila o node-syphon)
+# Node.js LTS 22.x: https://nodejs.org (ou brew install node@22)
+
+git clone https://github.com/Artboeira/anna-visuals.git ANNA_LED_VISUALS
+cd ANNA_LED_VISUALS
+npm install                   # node-syphon compila aqui — precisa do CLT acima
+npm run dev:electron
+```
+
+No app: aba SAÍDA → **Syphon · Iniciar** → tecla `O` (modo saída).
+No Resolume: **Sources → Syphon → ANNA_LED**. NDI não é necessário nesse
+cenário local (só se for mandar pela rede).
+
 ### Windows — Spout (app + Resolume na mesma máquina)
 
 Spout é o equivalente do Syphon no Windows; o Resolume recebe nativamente.
