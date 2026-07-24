@@ -9,6 +9,14 @@ const { NDISender } = require('./ndi-sender.cjs');
 const { SyphonServer } = require('./syphon-server.cjs');
 const { SpoutSender } = require('./spout-sender.cjs');
 
+// GC explícito no main process: os buffers do toBitmap() são memória EXTERNA
+// (em 6200×512 @ 60fps são ~760 MB/s) e o V8 quase não sente pressão dela —
+// sem gc() explícito o processo balona até dezenas de GB em segundos.
+const v8 = require('v8');
+const vm = require('vm');
+v8.setFlagsFromString('--expose_gc');
+const forceGC = vm.runInNewContext('gc');
+
 const DEV_URL = process.env.ANNA_DEV_URL || 'http://localhost:5178';
 const isDev = !app.isPackaged;
 // Tape-machine: ligar saídas no boot sem clique manual quando env var presente.
@@ -18,6 +26,12 @@ const isDev = !app.isPackaged;
 const AUTOSTART_NDI = process.env.ANNA_AUTOSTART_NDI || '';
 const AUTOSTART_SYPHON = process.env.ANNA_AUTOSTART_SYPHON || '';
 const AUTOSTART_SPOUT = process.env.ANNA_AUTOSTART_SPOUT || '';
+
+// Teto de fps da captura → senders. Cada toBitmap() aloca w*h*4 bytes (em
+// janela retina de edição, ~23 MB/frame): pular frames aqui é o que segura
+// a memória. 30 fps é transparente no LED; suba com ANNA_CAPTURE_FPS=60.
+const CAPTURE_FPS = Math.max(5, Math.min(60, parseInt(process.env.ANNA_CAPTURE_FPS || '30', 10) || 30));
+const CAPTURE_MIN_INTERVAL_MS = 1000 / CAPTURE_FPS - 1;
 
 let mainWindow = null;
 const ndi = new NDISender();
@@ -49,17 +63,43 @@ function createWindow() {
   // Frame subscription — modo VJ.
   // false (não cropped, RGBA full frame).
   let subscribed = false;
+  // Buffer reutilizável: os senders recebem SEMPRE a mesma alocação — se um
+  // deles (node-syphon, por ex.) retiver a referência entre frames, retém um
+  // único buffer em vez de pinar cada bitmap de 12+ MB por frame.
+  let shared = null;
+  // GC periódico enquanto a captura roda: libera os bitmaps externos que o
+  // V8 deixaria acumular (causa do estouro de memória visto em teste).
+  let gcTimer = null;
+
   function maybeSubscribe() {
     if (subscribed) return;
     if (!ndi.isRunning() && !syphon.isRunning() && !spout.isRunning()) return;
     subscribed = true;
+    let gcTicks = 0;
+    gcTimer = setInterval(() => {
+      try { forceGC(); } catch { /* noop */ }
+      if (++gcTicks % 20 === 0) {
+        const rss = process.memoryUsage().rss / (1024 * 1024);
+        console.log(`[mem] rss ${rss.toFixed(0)} MB (captura ativa)`);
+      }
+    }, 500);
+    let lastSentAt = 0;
     mainWindow.webContents.beginFrameSubscription(false, (image, dirty) => {
+      // Estrangula ANTES do toBitmap: frame pulado = zero alocação
+      const nowMs = Date.now();
+      if (nowMs - lastSentAt < CAPTURE_MIN_INTERVAL_MS) return;
+      lastSentAt = nowMs;
+
       const size = image.getSize();
       lastFrameSize = size;
-      const bitmap = image.toBitmap(); // BGRA, top-down
-      if (ndi.isRunning()) ndi.sendFrame(bitmap, size.width, size.height);
-      if (syphon.isRunning()) syphon.publishFrame(bitmap, size.width, size.height);
-      if (spout.isRunning()) spout.sendFrame(bitmap, size.width, size.height);
+      const bitmap = image.toBitmap(); // BGRA, top-down (nova alocação por frame)
+      if (!shared || shared.length !== bitmap.length) {
+        shared = Buffer.allocUnsafe(bitmap.length);
+      }
+      bitmap.copy(shared);
+      if (ndi.isRunning()) ndi.sendFrame(shared, size.width, size.height);
+      if (syphon.isRunning()) syphon.publishFrame(shared, size.width, size.height);
+      if (spout.isRunning()) spout.sendFrame(shared, size.width, size.height);
       // dirty é um rect indicando região alterada; ignoramos por simplicidade
       void dirty;
     });
@@ -69,6 +109,9 @@ function createWindow() {
     if (ndi.isRunning() || syphon.isRunning() || spout.isRunning()) return;
     try { mainWindow.webContents.endFrameSubscription(); } catch { /* noop */ }
     subscribed = false;
+    if (gcTimer) { clearInterval(gcTimer); gcTimer = null; }
+    shared = null;
+    try { forceGC(); } catch { /* noop */ }
   }
 
   // ──────── IPC handlers ────────
