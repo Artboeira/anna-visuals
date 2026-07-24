@@ -2,5 +2,6 @@ node_modules
 dist
 release
 electron/native/build
+electron/native-spout/build
 *.log
 .DS_Store

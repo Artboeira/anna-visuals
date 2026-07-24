@@ -11,6 +11,7 @@
     "build:electron": "tsc -b && vite build && electron-builder",
     "build:mac": "tsc -b && vite build && electron-builder --mac --x64 --arm64",
     "rebuild:ndi": "cd electron/native && node-gyp rebuild",
+    "rebuild:spout": "cd electron/native-spout && node-gyp rebuild",
     "preview": "vite preview"
   },
   "dependencies": {

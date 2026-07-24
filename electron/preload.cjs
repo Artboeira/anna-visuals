@@ -10,5 +10,7 @@ contextBridge.exposeInMainWorld('electronVJ', {
   stopNDI: () => ipcRenderer.invoke('vj:stop-ndi'),
   startSyphon: (name) => ipcRenderer.invoke('vj:start-syphon', name),
   stopSyphon: () => ipcRenderer.invoke('vj:stop-syphon'),
+  startSpout: (name) => ipcRenderer.invoke('vj:start-spout', name),
+  stopSpout: () => ipcRenderer.invoke('vj:stop-spout'),
   setOutputSize: (width, height) => ipcRenderer.invoke('vj:set-output-size', width, height),
 });

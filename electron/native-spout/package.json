@@ -1,0 +1,17 @@
+{
+  "name": "anna-led-spout-native",
+  "version": "0.1.0",
+  "private": true,
+  "description": "N-API binding pro Spout sender (Windows). Não publicado em npm — build local.",
+  "main": "index.js",
+  "gypfile": true,
+  "scripts": {
+    "rebuild": "node-gyp rebuild",
+    "configure": "node-gyp configure",
+    "clean": "node-gyp clean"
+  },
+  "dependencies": {
+    "bindings": "^1.5.0",
+    "node-addon-api": "^7.0.0"
+  }
+}

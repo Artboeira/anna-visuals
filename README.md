@@ -118,6 +118,25 @@ npm run rebuild:ndi
 Sem o SDK, o NDI aparece como "indisponível" e o **Syphon segue funcionando**
 (instalado via npm, já testado nesta máquina).
 
+### Windows — Spout (app + Resolume na mesma máquina)
+
+Spout é o equivalente do Syphon no Windows; o Resolume recebe nativamente.
+O sender está em `electron/native-spout` (SpoutDX / DirectX 11). Para
+compilar na máquina Windows (requer Visual Studio Build Tools + Python,
+a toolchain padrão do node-gyp):
+
+```bat
+git clone https://github.com/leadedge/Spout2 C:\Spout2
+set ANNA_SPOUT_SDK=C:/Spout2/SPOUTSDK
+npm run rebuild:spout
+```
+
+Depois: `npm run dev:electron` → aba SAÍDA → **Spout · Iniciar** → no
+Resolume, Sources → Spout → `ANNA_LED`. Autostart:
+`ANNA_AUTOSTART_SPOUT=ANNA_LED`. Sem o build, a linha Spout aparece como
+"indisponível" com o motivo — nada quebra (e o NDI em localhost funciona
+como alternativa imediata na mesma máquina).
+
 ## Exportar vídeo/imagem para teste no Resolume
 
 O mapa oficial está em `refs/Ame_withpanel.xml` (Arena 7): composição

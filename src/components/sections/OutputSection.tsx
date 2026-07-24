@@ -17,9 +17,16 @@ import s from './sections.module.css';
  * webContents.beginFrameSubscription → BGRA → NDI/Syphon → Resolume.
  */
 
+interface OutputStatus {
+  available: boolean;
+  running: boolean;
+  error: string | null;
+}
+
 interface VJStatus {
-  ndi: { available: boolean; running: boolean; error: string | null };
-  syphon: { available: boolean; running: boolean; error: string | null };
+  ndi: OutputStatus;
+  syphon: OutputStatus;
+  spout?: OutputStatus;
   frame: { width: number; height: number };
   platform: string;
 }
@@ -30,6 +37,8 @@ interface ElectronVJ {
   stopNDI(): Promise<{ ok: boolean }>;
   startSyphon(name: string): Promise<{ ok: boolean; error: string | null }>;
   stopSyphon(): Promise<{ ok: boolean }>;
+  startSpout?(name: string): Promise<{ ok: boolean; error: string | null }>;
+  stopSpout?(): Promise<{ ok: boolean }>;
   setOutputSize(width: number, height: number): Promise<{ ok: boolean }>;
 }
 
@@ -291,6 +300,19 @@ export function OutputSection() {
               onToggle={async () => {
                 if (status.syphon.running) await vj.stopSyphon();
                 else await vj.startSyphon(sourceName);
+                setStatus(await vj.status());
+              }}
+            />
+            <OutputRow
+              label="Spout"
+              sub={status.platform === 'win32' ? 'Windows local · Resolume na mesma máquina' : 'apenas Windows'}
+              available={status.spout?.available ?? false}
+              running={status.spout?.running ?? false}
+              error={status.spout?.error ?? null}
+              onToggle={async () => {
+                if (!vj.startSpout || !vj.stopSpout) return;
+                if (status.spout?.running) await vj.stopSpout();
+                else await vj.startSpout(sourceName);
                 setStatus(await vj.status());
               }}
             />

@@ -7,18 +7,22 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const { NDISender } = require('./ndi-sender.cjs');
 const { SyphonServer } = require('./syphon-server.cjs');
+const { SpoutSender } = require('./spout-sender.cjs');
 
 const DEV_URL = process.env.ANNA_DEV_URL || 'http://localhost:5178';
 const isDev = !app.isPackaged;
 // Tape-machine: ligar saídas no boot sem clique manual quando env var presente.
 //   ANNA_AUTOSTART_NDI=name        → liga NDI com esse nome de fonte
-//   ANNA_AUTOSTART_SYPHON=name     → liga Syphon idem
+//   ANNA_AUTOSTART_SYPHON=name     → liga Syphon idem (macOS)
+//   ANNA_AUTOSTART_SPOUT=name      → liga Spout idem (Windows)
 const AUTOSTART_NDI = process.env.ANNA_AUTOSTART_NDI || '';
 const AUTOSTART_SYPHON = process.env.ANNA_AUTOSTART_SYPHON || '';
+const AUTOSTART_SPOUT = process.env.ANNA_AUTOSTART_SPOUT || '';
 
 let mainWindow = null;
 const ndi = new NDISender();
 const syphon = new SyphonServer();
+const spout = new SpoutSender();
 let lastFrameSize = { width: 0, height: 0 };
 
 function createWindow() {
@@ -47,7 +51,7 @@ function createWindow() {
   let subscribed = false;
   function maybeSubscribe() {
     if (subscribed) return;
-    if (!ndi.isRunning() && !syphon.isRunning()) return;
+    if (!ndi.isRunning() && !syphon.isRunning() && !spout.isRunning()) return;
     subscribed = true;
     mainWindow.webContents.beginFrameSubscription(false, (image, dirty) => {
       const size = image.getSize();
@@ -55,13 +59,14 @@ function createWindow() {
       const bitmap = image.toBitmap(); // BGRA, top-down
       if (ndi.isRunning()) ndi.sendFrame(bitmap, size.width, size.height);
       if (syphon.isRunning()) syphon.publishFrame(bitmap, size.width, size.height);
+      if (spout.isRunning()) spout.sendFrame(bitmap, size.width, size.height);
       // dirty é um rect indicando região alterada; ignoramos por simplicidade
       void dirty;
     });
   }
   function maybeUnsubscribe() {
     if (!subscribed) return;
-    if (ndi.isRunning() || syphon.isRunning()) return;
+    if (ndi.isRunning() || syphon.isRunning() || spout.isRunning()) return;
     try { mainWindow.webContents.endFrameSubscription(); } catch { /* noop */ }
     subscribed = false;
   }
@@ -70,6 +75,7 @@ function createWindow() {
   ipcMain.handle('vj:status', () => ({
     ndi: { available: ndi.isAvailable(), running: ndi.isRunning(), error: ndi.lastError() },
     syphon: { available: syphon.isAvailable(), running: syphon.isRunning(), error: syphon.lastError() },
+    spout: { available: spout.isAvailable(), running: spout.isRunning(), error: spout.lastError() },
     frame: { width: lastFrameSize.width, height: lastFrameSize.height },
     platform: process.platform,
   }));
@@ -114,9 +120,22 @@ function createWindow() {
     return { ok: true };
   });
 
+  ipcMain.handle('vj:start-spout', (_e, name) => {
+    const ok = spout.start(name || 'ANNA_LED');
+    if (ok) maybeSubscribe();
+    return { ok, error: spout.lastError() };
+  });
+
+  ipcMain.handle('vj:stop-spout', () => {
+    spout.stop();
+    maybeUnsubscribe();
+    return { ok: true };
+  });
+
   mainWindow.on('closed', () => {
     ndi.stop();
     syphon.stop();
+    spout.stop();
     mainWindow = null;
   });
 
@@ -130,6 +149,11 @@ function createWindow() {
     if (AUTOSTART_SYPHON) {
       const ok = syphon.start(AUTOSTART_SYPHON);
       console.log(`[autostart] Syphon "${AUTOSTART_SYPHON}": ${ok ? 'ok' : 'fail — ' + syphon.lastError()}`);
+      if (ok) maybeSubscribe();
+    }
+    if (AUTOSTART_SPOUT) {
+      const ok = spout.start(AUTOSTART_SPOUT);
+      console.log(`[autostart] Spout "${AUTOSTART_SPOUT}": ${ok ? 'ok' : 'fail — ' + spout.lastError()}`);
       if (ok) maybeSubscribe();
     }
   });
