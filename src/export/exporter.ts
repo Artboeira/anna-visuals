@@ -127,12 +127,13 @@ export async function exportPNG(target: ExportTarget): Promise<void> {
 }
 
 /**
- * Máscara P&B para mapping: branco = furos (LED visível), preto = cenografia.
- * Segue a calibração atual da aba GRADE (incluindo o modo quadradinhos/
- * silhueta). Não passa pelo engine — a grade é gerada direto na resolução
- * do alvo, então nada muda no que está no ar.
+ * Quadriculado P&B para pixel mapping: xadrez alinhado à grade do cobogó,
+ * células INTEIRAS (sem respiro) alternando preto e branco — glifo em (0,0)
+ * branco. Bordas arredondadas por célula para sair pixel-crisp (só #000 e
+ * #fff, sem anti-alias). Segue linhas/colunas/margens/fase da aba GRADE.
+ * Não passa pelo engine — nada muda no que está no ar.
  */
-export async function exportMaskPNG(target: ExportTarget): Promise<void> {
+export async function exportCheckerPNG(target: ExportTarget): Promise<void> {
   const layout = layoutFor(target);
   const canvas = document.createElement('canvas');
   canvas.width = layout.outW;
@@ -142,18 +143,27 @@ export async function exportMaskPNG(target: ExportTarget): Promise<void> {
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, layout.outW, layout.outH);
 
-  const grid = buildCobogoGrid(useShowStore.getState().gridParams, layout.stripW, layout.stripH);
+  const params = useShowStore.getState().gridParams;
+  const grid = buildCobogoGrid(params, layout.stripW, layout.stripH);
+  const mx = params.marginX * layout.stripH;
+  const my = params.marginY * layout.stripH;
+
   ctx.save();
   ctx.translate(layout.stripX, layout.stripY);
   ctx.fillStyle = '#fff';
   for (const cell of grid.cells) {
-    ctx.fill(cell.path);
+    if (cell.type !== 'glyph') continue; // glifo = branco, octógono = preto
+    const x0 = Math.round(mx + cell.col * grid.cellW);
+    const x1 = Math.round(mx + (cell.col + 1) * grid.cellW);
+    const y0 = Math.round(my + cell.row * grid.cellH);
+    const y1 = Math.round(my + (cell.row + 1) * grid.cellH);
+    ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
   }
   ctx.restore();
 
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
-  if (!blob) throw new Error('Falha ao gerar a máscara PNG');
-  saveAs(blob, `anna-led_mascara_${layout.outW}x${layout.outH}_${stamp()}.png`);
+  if (!blob) throw new Error('Falha ao gerar o quadriculado PNG');
+  saveAs(blob, `anna-led_quadriculado_${layout.outW}x${layout.outH}_${stamp()}.png`);
 }
 
 // ───────────────────────────────────────────────────────── vídeo ──

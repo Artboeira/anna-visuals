@@ -188,9 +188,10 @@ Aba **SAÍDA → Exportar**:
   resolução interna atual.
 - **PNG** — frame atual, pixel-true (a resolução interna é trocada para o
   alvo durante o render e restaurada).
-- **Máscara (PNG P&B)** — para mapping: branco = furos (LED visível), preto =
-  cenografia. Gerada direto da calibração da aba GRADE (forma das células,
-  colunas, respiro) na resolução do alvo — sem passar pelo engine.
+- **Quadriculado P&B (mapping)** — xadrez preto/branco de células inteiras
+  (sem respiro), alinhado à grade da aba GRADE (linhas, colunas, fase —
+  glifo em (0,0) = branco), pixel-crisp na resolução do alvo. Padrão de
+  teste para conferir o pixel mapping no Resolume — sem passar pelo engine.
 - **Vídeo** — **MP4/H.264 de alta qualidade** via WebCodecs + mp4-muxer,
   em qualquer tamanho que o encoder da máquina aceite (6400×768 cabe no
   H.264 High L5.2; o probe tenta hardware e software). Se nenhum config

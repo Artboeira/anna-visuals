@@ -218,10 +218,11 @@ Só é preciso mexer quando houver informação nova da cenografia:
    respiros → escala do quadrado (ou, em **Forma das células → Silhueta**,
    chanfro do octógono e glifo — geometria do símbolo oficial ANNA 2026, fixa).
 3. A calibração persiste sozinha e sai no JSON exportado.
-4. Para o mapping da equipe: aba **SAÍDA → Exportar máscara (PNG P&B)** —
-   branco = furos (LED visível), preto = cenografia, na resolução do alvo
-   escolhido (painel 6400×768, comp do XML antigo ou resolução atual),
-   sempre refletindo a calibração desta aba.
+4. Para o mapping da equipe: aba **SAÍDA → Exportar quadriculado P&B** —
+   xadrez preto/branco de células inteiras alinhado à grade desta aba
+   (glifo em (0,0) = branco), na resolução do alvo escolhido (painel
+   6400×768, comp do XML antigo ou resolução atual). É o padrão de teste
+   para conferir o pixel mapping no Resolume.
 
 Se o corte final vier em SVG/DXF, a troca é em `src/grid/glyphPath.ts`
 (nenhuma cena muda). Quando a produtora confirmar o **pixel map**, ajuste a

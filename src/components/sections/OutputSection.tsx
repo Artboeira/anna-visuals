@@ -4,7 +4,7 @@ import { Slider } from '../ui/Slider';
 import { ButtonGroup } from '../ui/ButtonGroup';
 import {
   exportPNG,
-  exportMaskPNG,
+  exportCheckerPNG,
   startRecording,
   EXPORT_TARGETS,
   type ExportTarget,
@@ -90,11 +90,11 @@ export function OutputSection() {
 
   const handleExportMask = async () => {
     try {
-      setExportStatus('Gerando máscara…');
-      await exportMaskPNG(exportTarget);
-      setExportStatus('Máscara PNG exportada.');
+      setExportStatus('Gerando quadriculado…');
+      await exportCheckerPNG(exportTarget);
+      setExportStatus('Quadriculado PNG exportado.');
     } catch (err) {
-      setExportStatus(err instanceof Error ? err.message : 'Falha na exportação da máscara');
+      setExportStatus(err instanceof Error ? err.message : 'Falha na exportação do quadriculado');
     }
   };
 
@@ -237,11 +237,12 @@ export function OutputSection() {
           Exportar imagem (PNG)
         </button>
         <button className={s.btn} onClick={handleExportMask} disabled={recording}>
-          Exportar máscara (PNG P&B)
+          Exportar quadriculado P&B (mapping)
         </button>
         <div className={s.hint}>
-          Máscara para mapping: branco = furos (LED visível), preto =
-          cenografia — segue a calibração da aba GRADE (forma, colunas, respiro).
+          Xadrez preto/branco de células inteiras, alinhado à grade da aba
+          GRADE (linhas, colunas, fase — glifo em (0,0) = branco). Padrão de
+          teste para o pixel mapping no Resolume.
         </div>
         <Slider
           label="Duração do vídeo (s)"
