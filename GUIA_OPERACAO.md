@@ -218,8 +218,8 @@ Só é preciso mexer quando houver informação nova da cenografia:
 3. A calibração persiste sozinha e sai no JSON exportado.
 4. Para o mapping da equipe: aba **SAÍDA → Exportar máscara (PNG P&B)** —
    branco = furos (LED visível), preto = cenografia, na resolução do alvo
-   escolhido (slice 6200×512, comp ou resolução atual), sempre refletindo a
-   calibração desta aba.
+   escolhido (painel 6400×768, comp do XML antigo ou resolução atual),
+   sempre refletindo a calibração desta aba.
 
 Se o corte final vier em SVG/DXF, a troca é em `src/grid/glyphPath.ts`
 (nenhuma cena muda). Quando a produtora confirmar o **pixel map**, ajuste a

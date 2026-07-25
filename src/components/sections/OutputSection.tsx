@@ -52,10 +52,10 @@ declare global {
 }
 
 const RESOLUTION_PRESETS: { label: string; w: number; h: number }[] = [
-  { label: '6200 × 512 (slice Resolume — oficial)', w: 6200, h: 512 },
+  { label: '6400 × 768 (painel LED — oficial)', w: 6400, h: 768 },
+  { label: '6200 × 512 (slice do XML antigo)', w: 6200, h: 512 },
   { label: '2700 × 270 (1 px/cm)', w: 2700, h: 270 },
   { label: '1920 × 192', w: 1920, h: 192 },
-  { label: '3840 × 384', w: 3840, h: 384 },
 ];
 
 export function OutputSection() {
@@ -170,9 +170,9 @@ export function OutputSection() {
       <div className={s.section}>
         <h3 className={s.sectionTitle}>Resolução interna</h3>
         <div className={s.hint}>
-          Painel físico 27,00 × 2,70 m. Saída oficial: slice "Panel" do
-          Resolume, 6200×512 (refs/Ame_withpanel.xml). Para ensaiar leve,
-          use 2700×270; a exportação renderiza sempre no alvo escolhido.
+          Painel físico 27,00 × 2,70 m. Saída oficial: 6400×768, conferida no
+          Resolume do painel de LED. Para ensaiar leve, use 2700×270; a
+          exportação renderiza sempre no alvo escolhido.
         </div>
         <div className={s.list}>
           {RESOLUTION_PRESETS.map((r) => (
@@ -220,9 +220,9 @@ export function OutputSection() {
       <div className={s.section}>
         <h3 className={s.sectionTitle}>Exportar — teste no Resolume</h3>
         <div className={s.hint}>
-          Mapa oficial (refs/Ame_withpanel.xml): composição 6200×4600; o slice
-          "Panel" lê a faixa 6200×512 no rodapé (y 4088). Render pixel-true na
-          resolução do alvo.
+          Alvo oficial: 6400×768 (Resolume do painel). O alvo "Comp" mantém o
+          mapa do XML antigo (6200×4600, faixa em y 4088) para referência.
+          Render pixel-true na resolução do alvo.
         </div>
         <ButtonGroup
           label="Alvo"

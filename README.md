@@ -175,22 +175,23 @@ como alternativa imediata na mesma máquina).
 
 ## Exportar vídeo/imagem para teste no Resolume
 
-O mapa oficial está em `refs/Ame_withpanel.xml` (Arena 7): composição
-**6200×4600**, screen "Panel" com slice lendo **6200×512** no rodapé
-(y 4088–4600); o resto da composição alimenta os lumiverses DMX do teto.
+Resolução oficial do painel: **6400×768**, conferida no Resolume do próprio
+painel de LED (2026-07-25). O `refs/Ame_withpanel.xml` (comp 6200×4600 com
+slice 6200×512 no rodapé) ficou como referência do mapa antigo — o alvo
+"Comp" de export ainda o reproduz.
 
 Aba **SAÍDA → Exportar**:
-- **Alvo**: `Slice 6200×512` (arquivo para um layer cobrindo o rodapé),
-  `Comp 6200×4600` (composição inteira, faixa já posicionada, teto preto) ou
-  a resolução interna atual.
+- **Alvo**: `Painel 6400×768` (oficial), `Comp 6200×4600 (XML antigo)`
+  (composição inteira, faixa 6200×512 já posicionada, teto preto) ou a
+  resolução interna atual.
 - **PNG** — frame atual, pixel-true (a resolução interna é trocada para o
   alvo durante o render e restaurada).
 - **Máscara (PNG P&B)** — para mapping: branco = furos (LED visível), preto =
   cenografia. Gerada direto da calibração da aba GRADE (forma das células,
   colunas, respiro) na resolução do alvo — sem passar pelo engine.
 - **Vídeo** — **MP4/H.264 de alta qualidade** via WebCodecs + mp4-muxer,
-  em qualquer tamanho que o encoder da máquina aceite (o slice 6200×512 cabe
-  no H.264 High L5.2; o probe tenta hardware e software). Se nenhum config
+  em qualquer tamanho que o encoder da máquina aceite (6400×768 cabe no
+  H.264 High L5.2; o probe tenta hardware e software). Se nenhum config
   H.264 for aceito, cai em **WebM/VP9** com aviso — converter para DXV no
   Resolume Alley ou
   `ffmpeg -i clip.webm -c:v prores_ks -pix_fmt yuv422p clip.mov`.

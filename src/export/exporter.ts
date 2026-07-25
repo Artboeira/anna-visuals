@@ -25,11 +25,18 @@ export const RESOLUME_MAP = {
   panel: { x: 0, y: 4088, w: 6200, h: 512 },
 } as const;
 
+/**
+ * Resolução oficial do painel, conferida no Resolume do próprio painel de
+ * LED em 2026-07-25 — substitui o slice 6200×512 do XML antigo como alvo
+ * principal de export.
+ */
+export const PANEL_OUT = { w: 6400, h: 768 } as const;
+
 export type ExportTarget = 'slice' | 'comp' | 'internal';
 
 export const EXPORT_TARGETS: { id: ExportTarget; label: string; hint: string }[] = [
-  { id: 'slice', label: 'Slice 6200×512', hint: 'faixa que o slice "Panel" lê — coloque num layer cobrindo o rodapé da composição' },
-  { id: 'comp', label: 'Comp 6200×4600', hint: 'composição inteira, faixa já posicionada (y 4088) e teto preto' },
+  { id: 'slice', label: 'Painel 6400×768', hint: 'resolução oficial do painel (conferida no Resolume do LED) — arquivo pronto para o layer/slice' },
+  { id: 'comp', label: 'Comp 6200×4600 (XML antigo)', hint: 'composição do refs/Ame_withpanel.xml, faixa 6200×512 já posicionada (y 4088) e teto preto' },
   { id: 'internal', label: 'Resolução atual', hint: 'a resolução interna configurada acima' },
 ];
 
@@ -51,7 +58,7 @@ function layoutFor(target: ExportTarget): TargetLayout {
     return { stripW: panel.w, stripH: panel.h, outW: compW, outH: compH, stripX: panel.x, stripY: panel.y };
   }
   if (target === 'slice') {
-    return { stripW: panel.w, stripH: panel.h, outW: panel.w, outH: panel.h, stripX: 0, stripY: 0 };
+    return { stripW: PANEL_OUT.w, stripH: PANEL_OUT.h, outW: PANEL_OUT.w, outH: PANEL_OUT.h, stripX: 0, stripY: 0 };
   }
   const { internalWidth, internalHeight } = useShowStore.getState().output;
   return { stripW: internalWidth, stripH: internalHeight, outW: internalWidth, outH: internalHeight, stripX: 0, stripY: 0 };
