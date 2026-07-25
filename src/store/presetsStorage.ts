@@ -8,8 +8,9 @@ import type { GridParams } from '../grid/types';
 
 const PRESETS_KEY = 'anna_led_presets_v1';
 const PALETTES_KEY = 'anna_led_palettes_v1';
-// v3: glifo agora é o símbolo oficial ANNA 2026 (SVG) — params antigos descartados
-const GRID_KEY = 'anna_led_grid_v3';
+// v4: default 54×6 com glifo em (0,0) + modo quadradinhos — calibrações
+// antigas descartadas para o novo default valer em todas as máquinas
+const GRID_KEY = 'anna_led_grid_v4';
 const SESSION_KEY = 'anna_led_session_v1';
 
 function load<T>(key: string, fallback: T): T {

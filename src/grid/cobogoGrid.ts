@@ -1,6 +1,6 @@
 import type { CobogoCell, CobogoGrid, CellType, GridParams } from './types';
 import { PANEL_COUNT } from './types';
-import { buildOctagonPath, buildGlyphPath } from './glyphPath';
+import { buildOctagonPath, buildGlyphPath, buildSquarePath } from './glyphPath';
 
 /**
  * Gera a grade de cobogó procedural para uma resolução interna.
@@ -29,16 +29,21 @@ export function buildCobogoGrid(params: GridParams, width: number, height: numbe
       const type: CellType =
         (row + col + params.checkerPhase) % 2 === 0 ? 'octagon' : 'glyph';
 
+      // Modo quadradinhos: mesma geometria para todos — o xadrez de TIPOS
+      // permanece, então as cenas grid-aware (glifo em destaque, contraste
+      // por tipo) seguem funcionando sobre quadrados.
       const path =
-        type === 'octagon'
-          ? buildOctagonPath(
-              cx,
-              cy,
-              usableW * params.octagonScale,
-              usableH * params.octagonScale,
-              params.octagonCut,
-            )
-          : buildGlyphPath(cx, cy, usableW, usableH, params.glyph);
+        params.cellShape === 'quadrado'
+          ? buildSquarePath(cx, cy, usableW * params.squareScale, usableH * params.squareScale)
+          : type === 'octagon'
+            ? buildOctagonPath(
+                cx,
+                cy,
+                usableW * params.octagonScale,
+                usableH * params.octagonScale,
+                params.octagonCut,
+              )
+            : buildGlyphPath(cx, cy, usableW, usableH, params.glyph);
 
       const cell: CobogoCell = {
         row,

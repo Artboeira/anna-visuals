@@ -10,6 +10,15 @@
 export type CellType = 'octagon' | 'glyph';
 
 /**
+ * Forma desenhada em cada célula:
+ * - 'quadrado': grid de quadradinhos — cobre toda a silhueta do corte real,
+ *   qualquer que seja o desvio de alinhamento (decisão do teste no painel);
+ * - 'silhueta': logo ANNA + octógono (xadrez), para quando o alinhamento
+ *   com a cenografia estiver calibrado.
+ */
+export type CellShape = 'quadrado' | 'silhueta';
+
+/**
  * O glifo agora é o símbolo oficial ANNA 2026 (refs/ANNA LOGO 2026_SYMBOL
  * BLACK.svg), com geometria fixa — restam só escala e ajuste vertical.
  */
@@ -21,8 +30,12 @@ export interface GlyphParams {
 }
 
 export interface GridParams {
-  rows: number; // default 5
-  cols: number; // default 50
+  rows: number; // default 6
+  cols: number; // default 54
+  /** forma desenhada nas células (o xadrez de TIPOS continua nos dois modos) */
+  cellShape: CellShape;
+  /** escala do quadradinho na célula útil; >1 transborda p/ garantir cobertura (0.4..1.2) */
+  squareScale: number;
   /** margem horizontal, fração da ALTURA do canvas (unidade estável p/ 10:1) */
   marginX: number;
   /** margem vertical, fração da altura do canvas */
@@ -78,8 +91,12 @@ export interface CobogoGrid {
 export const PANEL_COUNT = 29;
 
 export const DEFAULT_GRID_PARAMS: GridParams = {
-  rows: 5,
-  cols: 50,
+  rows: 6,
+  cols: 54,
+  // Quadradinhos por padrão: no painel real, alinhar a silhueta logo/octógono
+  // com o corte é impraticável — quadrados garantem preencher toda a máscara.
+  cellShape: 'quadrado',
+  squareScale: 1.0,
   marginX: 0,
   marginY: 0,
   gapX: 0.18,
@@ -92,7 +109,7 @@ export const DEFAULT_GRID_PARAMS: GridParams = {
     scale: 0.92,
     offsetY: 0,
   },
-  checkerPhase: 0,
+  checkerPhase: 1, // glifo ANNA em (0,0)
   // Hipótese atual da produção: cobogó preto. Testável na aba GRADE.
   mdfColor: '#131313',
   ambientTint: '#c98a3e',

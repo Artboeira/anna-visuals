@@ -4,6 +4,7 @@ import { Slider } from '../ui/Slider';
 import { ButtonGroup } from '../ui/ButtonGroup';
 import {
   exportPNG,
+  exportMaskPNG,
   startRecording,
   EXPORT_TARGETS,
   type ExportTarget,
@@ -87,6 +88,16 @@ export function OutputSection() {
     }
   };
 
+  const handleExportMask = async () => {
+    try {
+      setExportStatus('Gerando máscara…');
+      await exportMaskPNG(exportTarget);
+      setExportStatus('Máscara PNG exportada.');
+    } catch (err) {
+      setExportStatus(err instanceof Error ? err.message : 'Falha na exportação da máscara');
+    }
+  };
+
   const handleRecord = async () => {
     if (recording) {
       recorderRef.current?.stop();
@@ -96,16 +107,16 @@ export function OutputSection() {
       setRecording(true);
       setElapsed(0);
       setExportStatus('');
-      const controller = startRecording({
+      const controller = await startRecording({
         target: exportTarget,
         durationSec,
         fps: recFps,
         onProgress: (sec) => setElapsed(sec),
       });
       recorderRef.current = controller;
-      setExportStatus(`Gravando (${controller.mimeType.includes('mp4') ? 'MP4/H.264' : 'WebM/VP9'})…`);
+      setExportStatus(`Gravando (${controller.label})…`);
       await controller.done;
-      setExportStatus('Vídeo exportado.');
+      setExportStatus(`Vídeo exportado (${controller.label}).`);
     } catch (err) {
       setExportStatus(err instanceof Error ? err.message : 'Falha na gravação');
     } finally {
@@ -225,6 +236,13 @@ export function OutputSection() {
         <button className={s.btn} onClick={handleExportPNG} disabled={recording}>
           Exportar imagem (PNG)
         </button>
+        <button className={s.btn} onClick={handleExportMask} disabled={recording}>
+          Exportar máscara (PNG P&B)
+        </button>
+        <div className={s.hint}>
+          Máscara para mapping: branco = furos (LED visível), preto =
+          cenografia — segue a calibração da aba GRADE (forma, colunas, respiro).
+        </div>
         <Slider
           label="Duração do vídeo (s)"
           value={durationSec}
@@ -252,9 +270,10 @@ export function OutputSection() {
         </button>
         {exportStatus && <div className={s.hint}>{exportStatus}</div>}
         <div className={s.hint}>
-          Mantenha esta aba do navegador visível durante a gravação. Acima de
-          4032 px de largura o arquivo sai em WebM/VP9 — se o Resolume não
-          abrir direto, converta para DXV no Resolume Alley ou:
+          Mantenha esta aba do navegador visível durante a gravação. O vídeo
+          sai em MP4/H.264 alta qualidade sempre que o encoder da máquina
+          aceitar o tamanho; caso contrário cai em WebM/VP9 — aí converta para
+          DXV no Resolume Alley ou:
           ffmpeg -i clip.webm -c:v prores_ks -pix_fmt yuv422p clip.mov
         </div>
       </div>

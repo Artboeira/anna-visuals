@@ -66,9 +66,15 @@ src/
 └── hooks/     useRenderLoop (rAF) · useKeyboard
 ```
 
-- **Resolução interna** default 2700×270 (1 px/cm; célula = 54 px), reconfigurável
-  na aba SAÍDA quando a produtora confirmar o pixel map. Cenas são
-  resolution-independent; a grade é re-gerada por resolução.
+- **Resolução interna** default 2700×270 (1 px/cm; pitch de célula = 50 px com
+  54 colunas), reconfigurável na aba SAÍDA quando a produtora confirmar o
+  pixel map. Cenas são resolution-independent; a grade é re-gerada por resolução.
+- **Grade default 54 × 6** com o glifo ANNA em (0,0) e células em modo
+  **quadradinhos**: no painel real, alinhar a silhueta logo/octógono com o
+  corte da cenografia é impraticável — quadrados garantem preencher toda a
+  máscara (escala >1 transborda a célula para folga de cobertura). A silhueta
+  segue disponível na aba GRADE; o xadrez de TIPOS vale nos dois modos, então
+  as cenas grid-aware não mudam.
 - **Cenas grid-aware** (Twinkle, Onda, Glifos ANNA) desenham célula a célula
   usando a mesma geometria do overlay — alinhamento garantido por construção.
 - **Mix A/B**: o engine mantém uma instância de cena por deck e compõe pelo
@@ -174,13 +180,19 @@ O mapa oficial está em `refs/Ame_withpanel.xml` (Arena 7): composição
 (y 4088–4600); o resto da composição alimenta os lumiverses DMX do teto.
 
 Aba **SAÍDA → Exportar**:
-- **Alvo**: `Slice 6200×512` (arquivo para um layer cobrindo o rodapé) ou
-  `Comp 6200×4600` (composição inteira, faixa já posicionada, teto preto).
+- **Alvo**: `Slice 6200×512` (arquivo para um layer cobrindo o rodapé),
+  `Comp 6200×4600` (composição inteira, faixa já posicionada, teto preto) ou
+  a resolução interna atual.
 - **PNG** — frame atual, pixel-true (a resolução interna é trocada para o
   alvo durante o render e restaurada).
-- **Vídeo** — MediaRecorder com duração/fps configuráveis. Acima de 4032 px
-  de largura sai **WebM/VP9**; se o Resolume não abrir direto, converter para
-  DXV no Resolume Alley ou
+- **Máscara (PNG P&B)** — para mapping: branco = furos (LED visível), preto =
+  cenografia. Gerada direto da calibração da aba GRADE (forma das células,
+  colunas, respiro) na resolução do alvo — sem passar pelo engine.
+- **Vídeo** — **MP4/H.264 de alta qualidade** via WebCodecs + mp4-muxer,
+  em qualquer tamanho que o encoder da máquina aceite (o slice 6200×512 cabe
+  no H.264 High L5.2; o probe tenta hardware e software). Se nenhum config
+  H.264 for aceito, cai em **WebM/VP9** com aviso — converter para DXV no
+  Resolume Alley ou
   `ffmpeg -i clip.webm -c:v prores_ks -pix_fmt yuv422p clip.mov`.
 - Manter a aba do navegador visível durante a gravação (rAF pausa em aba oculta).
 

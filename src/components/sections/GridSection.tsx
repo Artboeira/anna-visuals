@@ -84,34 +84,66 @@ export function GridSection() {
       </div>
 
       <div className={s.section}>
-        <h3 className={s.sectionTitle}>Octógono</h3>
-        <Slider label="Chanfro" value={gp.octagonCut} min={0} max={0.5} step={0.01} onChange={(v) => setGridParams({ octagonCut: v })} />
-        <Slider label="Escala" value={gp.octagonScale} min={0.4} max={1.2} step={0.01} onChange={(v) => setGridParams({ octagonScale: v })} />
+        <h3 className={s.sectionTitle}>Forma das células</h3>
+        <ButtonGroup
+          label="Forma"
+          options={[
+            { label: 'Quadradinhos', value: 'quadrado' },
+            { label: 'Silhueta (logo + octógono)', value: 'silhueta' },
+          ]}
+          value={gp.cellShape}
+          onChange={(v) => setGridParams({ cellShape: v as 'quadrado' | 'silhueta' })}
+        />
+        <div className={s.hint}>
+          Quadradinhos preenchem toda a silhueta do corte real — não dependem
+          de alinhamento fino com a cenografia. O xadrez de tipos continua
+          valendo para as cenas (glifo em destaque, contraste por tipo).
+        </div>
+        {gp.cellShape === 'quadrado' && (
+          <Slider
+            label="Escala do quadrado"
+            value={gp.squareScale}
+            min={0.4}
+            max={1.2}
+            step={0.01}
+            onChange={(v) => setGridParams({ squareScale: v })}
+          />
+        )}
       </div>
 
-      <div className={s.section}>
-        <h3 className={s.sectionTitle}>Glifo ANNA</h3>
-        <div className={s.hint}>
-          Geometria oficial do símbolo (refs/ANNA LOGO 2026_SYMBOL BLACK.svg) —
-          barras com topo arredondado + losangos na base.
-        </div>
-        <Slider
-          label="Escala do símbolo"
-          value={gp.glyph.scale}
-          min={0.4}
-          max={1.2}
-          step={0.01}
-          onChange={(v) => setGlyphParams({ scale: v })}
-        />
-        <Slider
-          label="Deslocamento vertical"
-          value={gp.glyph.offsetY}
-          min={-0.3}
-          max={0.3}
-          step={0.005}
-          onChange={(v) => setGlyphParams({ offsetY: v })}
-        />
-      </div>
+      {gp.cellShape === 'silhueta' && (
+        <>
+          <div className={s.section}>
+            <h3 className={s.sectionTitle}>Octógono</h3>
+            <Slider label="Chanfro" value={gp.octagonCut} min={0} max={0.5} step={0.01} onChange={(v) => setGridParams({ octagonCut: v })} />
+            <Slider label="Escala" value={gp.octagonScale} min={0.4} max={1.2} step={0.01} onChange={(v) => setGridParams({ octagonScale: v })} />
+          </div>
+
+          <div className={s.section}>
+            <h3 className={s.sectionTitle}>Glifo ANNA</h3>
+            <div className={s.hint}>
+              Geometria oficial do símbolo (refs/ANNA LOGO 2026_SYMBOL BLACK.svg) —
+              barras com topo arredondado + losangos na base.
+            </div>
+            <Slider
+              label="Escala do símbolo"
+              value={gp.glyph.scale}
+              min={0.4}
+              max={1.2}
+              step={0.01}
+              onChange={(v) => setGlyphParams({ scale: v })}
+            />
+            <Slider
+              label="Deslocamento vertical"
+              value={gp.glyph.offsetY}
+              min={-0.3}
+              max={0.3}
+              step={0.005}
+              onChange={(v) => setGlyphParams({ offsetY: v })}
+            />
+          </div>
+        </>
+      )}
 
       <div className={s.section}>
         <h3 className={s.sectionTitle}>Cenografia no preview</h3>

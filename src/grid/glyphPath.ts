@@ -14,6 +14,13 @@ import type { GlyphParams } from './types';
  *     (41.05, 363.98) e (386.17, 363.98) — na base, por fora das barras
  */
 
+/** Quadradinho centrado — modo cellShape 'quadrado'. */
+export function buildSquarePath(cx: number, cy: number, w: number, h: number): Path2D {
+  const p = new Path2D();
+  p.rect(cx - w / 2, cy - h / 2, w, h);
+  return p;
+}
+
 export function buildOctagonPath(cx: number, cy: number, w: number, h: number, cut: number): Path2D {
   const p = new Path2D();
   const hw = w / 2;

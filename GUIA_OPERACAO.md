@@ -201,14 +201,25 @@ cor fixa, trocar a paleta re-tematiza qualquer cena sem mexer em mais nada —
 
 ## 10. Grade / calibração do cobogó
 
+Default atual (pós-teste no painel): **54 colunas × 6 linhas**, glifo ANNA em
+(0,0), células em modo **quadradinhos** — no painel real, alinhar a silhueta
+logo/octógono com o corte é impraticável; quadrados garantem preencher toda a
+máscara. "Escala do quadrado" acima de 1.0 transborda a célula, dando folga de
+cobertura. O xadrez de tipos continua valendo, então as cenas com glifo em
+destaque / contraste por tipo funcionam igual.
+
 Só é preciso mexer quando houver informação nova da cenografia:
 
 1. Aba **GRADE** → ligue o **ghost** (`G`) — o desenho técnico real aparece
    sobreposto ao preview.
 2. Ajuste até a grade procedural cobrir o padrão: linhas/colunas → margens →
-   respiros → chanfro do octógono → glifo (escala e posição vertical — a
-   geometria é a do símbolo oficial ANNA 2026, fixa).
+   respiros → escala do quadrado (ou, em **Forma das células → Silhueta**,
+   chanfro do octógono e glifo — geometria do símbolo oficial ANNA 2026, fixa).
 3. A calibração persiste sozinha e sai no JSON exportado.
+4. Para o mapping da equipe: aba **SAÍDA → Exportar máscara (PNG P&B)** —
+   branco = furos (LED visível), preto = cenografia, na resolução do alvo
+   escolhido (slice 6200×512, comp ou resolução atual), sempre refletindo a
+   calibração desta aba.
 
 Se o corte final vier em SVG/DXF, a troca é em `src/grid/glyphPath.ts`
 (nenhuma cena muda). Quando a produtora confirmar o **pixel map**, ajuste a

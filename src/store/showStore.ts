@@ -185,6 +185,14 @@ export const useShowStore = create<ShowState>((set, get) => ({
     ? {
         ...DEFAULT_GRID_PARAMS,
         ...storedGrid,
+        cellShape:
+          storedGrid.cellShape === 'quadrado' || storedGrid.cellShape === 'silhueta'
+            ? storedGrid.cellShape
+            : DEFAULT_GRID_PARAMS.cellShape,
+        squareScale:
+          typeof storedGrid.squareScale === 'number'
+            ? storedGrid.squareScale
+            : DEFAULT_GRID_PARAMS.squareScale,
         // Hidratação validada do glifo: só os campos conhecidos e numéricos —
         // shapes antigos (v1/v2 tinham barWidth, dotRadius...) são descartados
         glyph: {

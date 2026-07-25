@@ -1,6 +1,8 @@
 import { saveAs } from 'file-saver';
 import { renderEngine } from '../engine/RenderEngine';
 import { useShowStore } from '../store/showStore';
+import { buildCobogoGrid } from '../grid/cobogoGrid';
+import { recordMP4, probeMP4Support } from './mp4Encoder';
 
 /**
  * Exportação de imagem/vídeo para teste no Resolume.
@@ -117,13 +119,44 @@ export async function exportPNG(target: ExportTarget): Promise<void> {
   });
 }
 
+/**
+ * Máscara P&B para mapping: branco = furos (LED visível), preto = cenografia.
+ * Segue a calibração atual da aba GRADE (incluindo o modo quadradinhos/
+ * silhueta). Não passa pelo engine — a grade é gerada direto na resolução
+ * do alvo, então nada muda no que está no ar.
+ */
+export async function exportMaskPNG(target: ExportTarget): Promise<void> {
+  const layout = layoutFor(target);
+  const canvas = document.createElement('canvas');
+  canvas.width = layout.outW;
+  canvas.height = layout.outH;
+  const ctx = canvas.getContext('2d')!;
+
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, layout.outW, layout.outH);
+
+  const grid = buildCobogoGrid(useShowStore.getState().gridParams, layout.stripW, layout.stripH);
+  ctx.save();
+  ctx.translate(layout.stripX, layout.stripY);
+  ctx.fillStyle = '#fff';
+  for (const cell of grid.cells) {
+    ctx.fill(cell.path);
+  }
+  ctx.restore();
+
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
+  if (!blob) throw new Error('Falha ao gerar a máscara PNG');
+  saveAs(blob, `anna-led_mascara_${layout.outW}x${layout.outH}_${stamp()}.png`);
+}
+
 // ───────────────────────────────────────────────────────── vídeo ──
 
 export interface RecordingController {
   /** resolve quando o arquivo foi baixado */
   done: Promise<void>;
   stop: () => void;
-  mimeType: string;
+  /** descrição do codec real em uso, para a UI */
+  label: string;
 }
 
 export interface RecordOptions {
@@ -133,30 +166,61 @@ export interface RecordOptions {
   onProgress?: (elapsedSec: number) => void;
 }
 
-function pickMimeType(width: number): string {
-  // H.264 estoura o limite de nível/encoder acima de ~4096 px de largura —
-  // nesses casos vai direto de VP9 (WebM). Converta para DXV no Resolume
-  // Alley ou via ffmpeg se precisarem de codec nativo.
-  const candidates =
-    width <= 4032
-      ? ['video/mp4;codecs=avc1.640033', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm']
-      : ['video/webm;codecs=vp9', 'video/webm'];
+function videoFilename(layout: TargetLayout, seconds: number, ext: string): string {
+  return `anna-led_${sceneSlug()}_${layout.outW}x${layout.outH}_${Math.round(seconds)}s.${ext}`;
+}
+
+/**
+ * Caminho preferencial: WebCodecs + mp4-muxer → MP4/H.264 de alta qualidade
+ * em qualquer tamanho que o encoder aceitar (inclusive o slice 6200×512).
+ * Fallback: MediaRecorder WebM/VP9 (converter no Resolume Alley ou ffmpeg).
+ */
+export async function startRecording(opts: RecordOptions): Promise<RecordingController> {
+  const layout = layoutFor(opts.target);
+  const support = await probeMP4Support(layout.outW, layout.outH, opts.fps);
+
+  let stopRequested = false;
+  const requestStop = () => {
+    stopRequested = true;
+  };
+
+  if (support) {
+    const done = withStripResolution(layout.stripW, layout.stripH, async () => {
+      const t0 = performance.now();
+      const blob = await recordMP4({
+        width: layout.outW,
+        height: layout.outH,
+        fps: opts.fps,
+        durationSec: opts.durationSec,
+        support,
+        drawFrame: (ctx) => composeFrame(ctx, layout),
+        onProgress: opts.onProgress,
+        isStopRequested: () => stopRequested,
+      });
+      saveAs(blob, videoFilename(layout, Math.min(opts.durationSec, (performance.now() - t0) / 1000), 'mp4'));
+    });
+    return { done, stop: requestStop, label: 'MP4/H.264' };
+  }
+
+  return startRecordingMediaRecorder(opts, layout, requestStop, () => stopRequested);
+}
+
+function pickMimeType(): string {
+  const candidates = ['video/webm;codecs=vp9', 'video/webm'];
   for (const c of candidates) {
     if (typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported(c)) return c;
   }
   return '';
 }
 
-export function startRecording(opts: RecordOptions): RecordingController {
-  const layout = layoutFor(opts.target);
-  const mimeType = pickMimeType(layout.outW);
-  if (!mimeType) throw new Error('Este navegador não suporta gravação de vídeo (MediaRecorder)');
-
-  let stopped = false;
-  let stopRequested = false;
-  const requestStop = () => {
-    stopRequested = true;
-  };
+function startRecordingMediaRecorder(
+  opts: RecordOptions,
+  layout: TargetLayout,
+  requestStop: () => void,
+  isStopRequested: () => boolean,
+): RecordingController {
+  const mimeType = pickMimeType();
+  if (!mimeType) throw new Error('Este navegador não suporta gravação de vídeo');
 
   const done = withStripResolution(layout.stripW, layout.stripH, async () => {
     const canvas = document.createElement('canvas');
@@ -183,7 +247,7 @@ export function startRecording(opts: RecordOptions): RecordingController {
 
     // Loop de composição: copia o frame do engine para o canvas gravado.
     // O loop principal do app segue rodando e alimentando o engine.
-    while (!stopRequested) {
+    while (!isStopRequested()) {
       await nextFrame();
       composeFrame(ctx, layout);
       const elapsed = (performance.now() - t0) / 1000;
@@ -193,23 +257,17 @@ export function startRecording(opts: RecordOptions): RecordingController {
 
     recorder.stop();
     await finished;
-    stopped = true;
 
-    const ext = mimeType.startsWith('video/mp4') ? 'mp4' : 'webm';
     const blob = new Blob(chunks, { type: mimeType });
     saveAs(
       blob,
-      `anna-led_${sceneSlug()}_${layout.outW}x${layout.outH}_${Math.round(
-        Math.min(opts.durationSec, (performance.now() - t0) / 1000),
-      )}s.${ext}`,
+      videoFilename(layout, Math.min(opts.durationSec, (performance.now() - t0) / 1000), 'webm'),
     );
   });
 
   return {
-    done: done.then(() => {
-      void stopped;
-    }),
+    done,
     stop: requestStop,
-    mimeType,
+    label: 'WebM/VP9 — H.264 indisponível neste tamanho',
   };
 }
