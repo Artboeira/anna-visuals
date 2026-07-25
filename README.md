@@ -74,7 +74,9 @@ src/
   corte da cenografia é impraticável — quadrados garantem preencher toda a
   máscara (escala >1 transborda a célula para folga de cobertura). A silhueta
   segue disponível na aba GRADE; o xadrez de TIPOS vale nos dois modos, então
-  as cenas grid-aware não mudam.
+  as cenas grid-aware não mudam. A **simulação do cobogó (M) mostra sempre o
+  corte real** (logo + octógono) — o modo quadradinhos só muda o que o LED
+  pinta, não a cenografia física.
 - **Cenas grid-aware** (Twinkle, Onda, Glifos ANNA) desenham célula a célula
   usando a mesma geometria do overlay — alinhamento garantido por construção.
 - **Mix A/B**: o engine mantém uma instância de cena por deck e compõe pelo

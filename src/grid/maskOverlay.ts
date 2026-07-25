@@ -1,4 +1,5 @@
 import type { CobogoGrid } from './types';
+import { buildCobogoGrid } from './cobogoGrid';
 import { withAlpha } from '../core/colorUtils';
 
 /**
@@ -8,6 +9,11 @@ import { withAlpha } from '../core/colorUtils';
  *
  * No preview, este canvas é desenhado POR CIMA do frame do LED:
  * o que se vê pelos furos é o visual; o resto é MDF sob luz ambiente quente.
+ *
+ * IMPORTANTE: o corte físico do MDF é SEMPRE a silhueta (logo + octógono) —
+ * o modo 'quadradinhos' muda só o que as cenas pintam no LED, não a
+ * cenografia real. Por isso os furos daqui usam a variante silhueta mesmo
+ * quando a grade ativa está em quadradinhos.
  */
 
 let cached: HTMLCanvasElement | null = null;
@@ -51,10 +57,15 @@ export function getMaskOverlay(grid: CobogoGrid): HTMLCanvasElement {
     ctx.stroke();
   }
 
-  // Furos do cobogó
+  // Furos do cobogó — sempre o corte real (silhueta), independente do
+  // cellShape ativo (que só afeta o que o LED pinta)
+  const cutGrid =
+    params.cellShape === 'silhueta'
+      ? grid
+      : buildCobogoGrid({ ...params, cellShape: 'silhueta' }, grid.width, grid.height);
   ctx.globalCompositeOperation = 'destination-out';
   ctx.fillStyle = '#fff';
-  for (const cell of grid.cells) {
+  for (const cell of cutGrid.cells) {
     ctx.fill(cell.path);
   }
   ctx.globalCompositeOperation = 'source-over';

@@ -206,7 +206,9 @@ Default atual (pós-teste no painel): **54 colunas × 6 linhas**, glifo ANNA em
 logo/octógono com o corte é impraticável; quadrados garantem preencher toda a
 máscara. "Escala do quadrado" acima de 1.0 transborda a célula, dando folga de
 cobertura. O xadrez de tipos continua valendo, então as cenas com glifo em
-destaque / contraste por tipo funcionam igual.
+destaque / contraste por tipo funcionam igual. A **simulação do cobogó (M)
+mostra sempre o corte real** (logo + octógono, moldado pelas seções Octógono
+e Glifo ANNA) — quadradinhos mudam só o que o LED pinta.
 
 Só é preciso mexer quando houver informação nova da cenografia:
 
